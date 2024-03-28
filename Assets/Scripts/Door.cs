@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using TMPro;
 using UnityEngine;
 
 public class Door : MonoBehaviour
@@ -13,6 +14,8 @@ public class Door : MonoBehaviour
     [SerializeField] string key;
     [SerializeField] Keys keys;
     AudioSource AS;
+
+    [SerializeField] GameObject LockText;
     private void Awake()
     {
         AS = GetComponent<AudioSource>();
@@ -39,31 +42,47 @@ public class Door : MonoBehaviour
 
     void Update()
     {
-        foreach ( string k in keys.KeyCollected)
+        if (Time.timeScale > 0&&!PauseMode.instanse.pause)
         {
-            if(k == key&&key!="")
+
+            foreach (string k in keys.KeyCollected)
             {
-                DoorLock = false;
+                if (k == key && key != "")
+                {
+                    DoorLock = false;
+                }
+            }
+            if (player && Input.GetKeyDown(KeyCode.E) && !DoorLock)
+            {
+
+                AS.Play();
+                if (!doorBool)
+                    doorBool = true;
+                else
+                    doorBool = false;
+            }
+            else if (player && Input.GetKeyDown(KeyCode.E) && DoorLock)
+            {
+                LockText.SetActive(true);
+                StartCoroutine("DLockTex");
+            }
+            if (doorBool && !DoorLock)
+            {
+                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(OpenRotation), rotSpeed * Time.deltaTime);
+
+
+            }
+            else
+            {
+                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(CloseRotation), rotSpeed * Time.deltaTime);
             }
         }
-        if (player && Input.GetKeyDown(KeyCode.Space) && !DoorLock)
-        {
 
-            AS.Play();
-            if (!doorBool)
-                doorBool = true;
-            else
-                doorBool = false;
-        }
-        if (doorBool && !DoorLock)
-        {
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(OpenRotation), rotSpeed * Time.deltaTime);
+    }
+    IEnumerator DLockTex()
+    {
+        yield return new WaitForSeconds(1);
 
-
-        }
-        else
-        {
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(CloseRotation), rotSpeed * Time.deltaTime);
-        }
+        LockText.SetActive(false);
     }
 }

@@ -9,12 +9,17 @@ public class Keys : MonoBehaviour
     public string[] KeyCollected = new string[10];
     int i = 0;
     int j = 0;
+    public int gunpart;
     [SerializeField] TMP_Text Hint;
     [SerializeField] TMP_Text Hint2;
+    [SerializeField] TMP_Text Hint3;
     bool flag;
     GameObject it;
     AudioSource audioSource;
     public string[] HintClip = new string[4];
+    public bool gun;
+    [SerializeField] GameObject Gun;
+    [SerializeField] GameObject GunText;
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -22,50 +27,96 @@ public class Keys : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && flag)
+        if (Time.timeScale > 0 && !PauseMode.instanse.pause)
         {
-            audioSource.Play();
-            KeyCollected[i++] = it.name;
-            flag = false;
-            if (it.name == "Clipboard" && j <= HintClip.Length)
+
+            if (Input.GetKeyUp(KeyCode.R) && gunpart >= 3)
             {
-                StartCoroutine(ClipDest());
+                Gun.SetActive(true);
+                gun = true;
+                GunText.SetActive(false);
             }
 
-            StartCoroutine(ItemsDest(it));
+            if (Input.GetKeyDown(KeyCode.Q) && flag)
+            {
+                audioSource.Play();
+                KeyCollected[i++] = it.name;
+                if (it.name == "Double Barrel Gun Part-1" || it.name == "Double Barrel Gun Part-2" || it.name == "Bullet of Double Barrel Gun")
+                {
+                    gunpart++;
+                    if (gunpart >= 3)
+                    {
+                        StartCoroutine(G());
+                    }
+                }
+                flag = false;
+                if (it.name == "Clipboard" && j <= HintClip.Length)
+                {
+                    StartCoroutine(ClipDest());
+                }
+
+                StartCoroutine(ItemsDest(it));
+            }
         }
+        
+    }
+    IEnumerator G()
+    {
+        yield return new WaitForSeconds(1);
+        GunText.SetActive(true);
+        yield return new WaitForSeconds(5);
+        GunText.SetActive(false);
     }
 
     IEnumerator ClipDest()
     {
 
         yield return new WaitForSeconds(0.6f);
-        Hint2.SetText(HintClip[j++]);
+        Hint3.SetText(HintClip[j++]);
         yield return new WaitForSeconds(5);
-        Hint2.SetText("");
+        Hint3.SetText("");
     }
     private void OnTriggerEnter(Collider other)
     {
+        if (other.gameObject.CompareTag("Barr1"))
+        {
+            Hint.SetText("Collect all three of Gun parts before going to roof.");
+        }
+        if (other.gameObject.CompareTag("Boss")&&gun)
+        {
+            StartCoroutine(FireText());
+        }
         if (other.gameObject.CompareTag("Items"))
         {
             flag = true;
         }
     }
+    IEnumerator FireText()
+    {
+        Hint.SetText("Fire");
+        yield return new WaitForSeconds(5);
+        Hint.SetText("");
+
+    }
     private void OnTriggerStay(Collider hit)
     {
         if (hit.gameObject.CompareTag("Items"))
         {
-            if (Hint2.text != "")
-            {
-                Hint2.SetText("");
-            }
-            Hint.SetText("You have found " + hit.gameObject.name + ": press E");
+            Hint.SetText("You have found " + hit.gameObject.name + ": press Q to collect.");
             it = hit.gameObject;
 
         }
     }
     void OnTriggerExit(Collider x)
     {
+        if (x.gameObject.CompareTag("Barr1"))
+        {
+            Hint.SetText("");
+        }
+        if (x.gameObject.CompareTag("Boss"))
+        {
+            Hint.SetText("");
+        }
         if (x.gameObject.CompareTag("Items"))
         {
             Hint.SetText("");

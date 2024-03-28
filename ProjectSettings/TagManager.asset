@@ -9,6 +9,9 @@ TagManager:
   - Hide
   - Items
   - Exit
+  - Door
+  - Barr1
+  - Boss
   layers:
   - Default
   - TransparentFX

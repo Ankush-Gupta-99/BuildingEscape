@@ -34,7 +34,7 @@ public class RotationByMouse : MonoBehaviour
             //transform.Rotate(transform.up * X);
             Camera.localRotation = Quaternion.Lerp(Camera.localRotation, Quaternion.Euler(xrot, 0, 0), 0.9f);
         }
-        if (Input.GetKeyDown(KeyCode.Escape)||Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             Cursor.lockState = CursorLockMode.None;
             Mlock = false;

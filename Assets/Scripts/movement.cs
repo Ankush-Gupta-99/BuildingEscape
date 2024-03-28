@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class movement : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class movement : MonoBehaviour
     [SerializeField] Vector3 Gravity=new Vector3(0,-10,0);
     [SerializeField] AudioSource AS;
     [SerializeField] AudioSource AS2;
+    int sprint;
     private void Awake()
     {
         Time.timeScale = 1;
@@ -26,8 +28,19 @@ public class movement : MonoBehaviour
     }
     private void Update()
     {
-        Movem();
-        Crouch();
+        if (Time.timeScale > 0 && !PauseMode.instanse.pause)
+        {
+            Movem();
+            Crouch();
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                sprint = 4;
+            }
+            else
+            {
+                sprint = 2;
+            }
+        }
     }
 
     void Crouch()
@@ -63,8 +76,7 @@ public class movement : MonoBehaviour
         {
             AS.enabled = true;
             AS2.enabled = true;
-            controller.Move((((transform.forward * Y + transform.right * X).normalized * speed) + (Gravity)) * Time.deltaTime);
-            controller.SimpleMove((transform.forward * Y + transform.right * X).normalized * speed);
+            controller.Move((((transform.forward * Y + transform.right * X).normalized *sprint* speed) + (Gravity)) * Time.deltaTime);
             animator.SetBool("Wait", false);
             animator.SetBool("Walk", true);
         }
@@ -86,8 +98,10 @@ public class movement : MonoBehaviour
 
         }
     }
+
     private void OnTriggerStay(Collider other)
     {
+        
         if(other.gameObject.name== "OnlyCrouch")
         {
             if (sit == false)

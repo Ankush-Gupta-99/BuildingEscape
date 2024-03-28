@@ -13,19 +13,23 @@ public class teleport : MonoBehaviour
     // Start is called before the first frame update
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E)&&flag)
+        if (Time.timeScale > 0 && !PauseMode.instanse.pause)
         {
-            flag = false;
-            pla.gameObject.transform.localPosition = tel.localPosition;
-            pla.gameObject.transform.localScale = tel.localScale;
-            Hint.SetText("");
+
+            if (Input.GetKeyDown(KeyCode.Q) && flag)
+            {
+                flag = false;
+                pla.gameObject.transform.localPosition = tel.localPosition;
+                pla.gameObject.transform.localScale = tel.localScale;
+                Hint.SetText("");
+            }
         }
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Hint.SetText("Press E to teleport.");
+            Hint.SetText("Press Q to teleport.");
             pla = other;
             flag= true;
         }

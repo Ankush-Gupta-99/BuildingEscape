@@ -22,8 +22,9 @@ public class MainScreenUi : MonoBehaviour
     [SerializeField]    AudioMixer Volume;
     private void Start()
     {
+        Time.timeScale = 1;
         As = GetComponent<AudioSource>();
-        SetSens(PlayerPrefs.GetFloat("Sens", 0.7f));
+        SetSens(PlayerPrefs.GetFloat("Sens", 2f));
         SetVol(PlayerPrefs.GetFloat("Volume", 0));
     }
     public void Exit()
@@ -40,6 +41,7 @@ public class MainScreenUi : MonoBehaviour
     {
         Main.SetActive(false);
         LoadingScreen.SetActive(true);
+        yield return new WaitForSeconds(5f);
         AsyncOperation LevelingLoad = SceneManager.LoadSceneAsync(1);
         while (!LevelingLoad.isDone)
         {
