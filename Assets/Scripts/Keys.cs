@@ -46,7 +46,7 @@ public class Keys : MonoBehaviour
                     gunpart++;
                     if (gunpart >= 3)
                     {
-                        StartCoroutine(G());
+                        StartCoroutine(GunTextCo());
                     }
                 }
                 flag = false;
@@ -60,28 +60,17 @@ public class Keys : MonoBehaviour
         }
         
     }
-    IEnumerator G()
-    {
-        yield return new WaitForSeconds(1);
-        GunText.SetActive(true);
-        yield return new WaitForSeconds(5);
-        GunText.SetActive(false);
-    }
-
-    IEnumerator ClipDest()
-    {
-
-        yield return new WaitForSeconds(0.6f);
-        Hint3.SetText(HintClip[j++]);
-        yield return new WaitForSeconds(5);
-        Hint3.SetText("");
-    }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Barr1"))
+        if (other.gameObject.CompareTag("Barr1")&&!gun)
         {
-            Hint.SetText("Collect all three of Gun parts before going to roof.");
+            Hint.SetText("Activate gun before going to roof.");
         }
+        if (other.gameObject.CompareTag("Barr1")&&gun)
+        {
+            Destroy(other.gameObject);
+        }
+
         if (other.gameObject.CompareTag("Boss")&&gun)
         {
             StartCoroutine(FireText());
@@ -90,13 +79,6 @@ public class Keys : MonoBehaviour
         {
             flag = true;
         }
-    }
-    IEnumerator FireText()
-    {
-        Hint.SetText("Fire");
-        yield return new WaitForSeconds(5);
-        Hint.SetText("");
-
     }
     private void OnTriggerStay(Collider hit)
     {
@@ -131,6 +113,29 @@ public class Keys : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         Destroy(hit);
         Hint.SetText("");
+    }
+    IEnumerator GunTextCo()
+    {
+        yield return new WaitForSeconds(1);
+        GunText.SetActive(true);
+        yield return new WaitForSeconds(5);
+        GunText.SetActive(false);
+    }
+
+    IEnumerator ClipDest()
+    {
+
+        yield return new WaitForSeconds(0.6f);
+        Hint3.SetText(HintClip[j++]);
+        yield return new WaitForSeconds(5);
+        Hint3.SetText("");
+    }
+    IEnumerator FireText()
+    {
+        Hint.SetText("Fire");
+        yield return new WaitForSeconds(5);
+        Hint.SetText("");
+
     }
 
 }

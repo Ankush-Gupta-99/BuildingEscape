@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Boss : MonoBehaviour
 {
+    [SerializeField] GameObject Ghoul;
     [SerializeField]AudioSource AS;
     [SerializeField]AudioSource AS2;
     [SerializeField] Keys k;
@@ -13,12 +14,6 @@ public class Boss : MonoBehaviour
     [SerializeField] GameObject[] Life;
     [SerializeField]Animation anim;
     [SerializeField] GameObject Sfire;
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
     void Update()
     {
         if(Time.timeScale>0 && !PauseMode.instanse.pause)
@@ -39,23 +34,6 @@ public class Boss : MonoBehaviour
 
         }
     }
-    IEnumerator S()
-    {
-        yield return new WaitForSeconds(0.1f);
-
-        Sfire.SetActive(false);
-    }
-    IEnumerator Dead()
-    {
-        yield return new WaitForSeconds(0.5f);
-        AS.Pause();
-        AS2.Pause();
-        anim.Play("Death");
-        yield return new WaitForSeconds(1f);
-        anim.Stop();
-        yield return new WaitForSeconds(1);
-        gameObject.SetActive(false);
-    }
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.CompareTag("Player"))
@@ -71,5 +49,22 @@ public class Boss : MonoBehaviour
             AS2.enabled = false;
             fire = false;
         }
+    }
+    IEnumerator S()
+    {
+        yield return new WaitForSeconds(0.1f);
+
+        Sfire.SetActive(false);
+    }
+    IEnumerator Dead()
+    {
+        yield return new WaitForSeconds(0.5f);
+        AS.Pause();
+        AS2.Pause();
+        anim.Play("Death");
+        yield return new WaitForSeconds(1f);
+        Ghoul.SetActive(false);
+        yield return new WaitForSeconds(1);
+        gameObject.SetActive(false);
     }
 }

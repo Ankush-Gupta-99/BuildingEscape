@@ -23,26 +23,9 @@ public class Door : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("PlayerEye"))
-        {
-            player = true;
-            
-        }
-    }  private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.CompareTag("PlayerEye"))
-        {
-            player = false;
-            
-        }
-    }
-
-
     void Update()
     {
-        if (Time.timeScale > 0&&!PauseMode.instanse.pause)
+        if (Time.timeScale > 0)
         {
 
             foreach (string k in keys.KeyCollected)
@@ -54,7 +37,7 @@ public class Door : MonoBehaviour
             }
             if (player && Input.GetKeyDown(KeyCode.E) && !DoorLock)
             {
-
+                //StartCoroutine(Pause());
                 AS.Play();
                 if (!doorBool)
                     doorBool = true;
@@ -79,6 +62,31 @@ public class Door : MonoBehaviour
         }
 
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("PlayerEye"))
+        {
+            player = true;
+            
+        }
+    } 
+    
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("PlayerEye"))
+        {
+            player = false;
+            
+        }
+    }
+
+    /* IEnumerator Pause()
+     {
+         PauseMode.instanse.pause=true;
+         yield return new WaitForSeconds(1.2f);
+         PauseMode.instanse.pause = false;
+     }*/
     IEnumerator DLockTex()
     {
         yield return new WaitForSeconds(1);
